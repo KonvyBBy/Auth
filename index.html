@@ -25,7 +25,7 @@
             align-items: flex-start;
             padding: 40px 20px;
         }
-        .container { width: 100%; max-width: 720px; }
+        .container { width: 100%; max-width: 740px; }
         h1 { color: var(--accent); font-size: 1.8em; text-align: center; margin-bottom: 4px; }
         .subtitle { text-align: center; color: #666; font-size: 0.85em; margin-bottom: 24px; }
 
@@ -51,13 +51,11 @@
         }
         input:focus, select:focus { border-color: var(--accent); }
         button {
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.15s;
-            background: var(--accent);
-            border-color: var(--accent);
+            cursor: pointer; font-weight: 600; transition: 0.15s;
+            background: var(--accent); border-color: var(--accent);
         }
         button:hover { filter: brightness(1.15); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
         button.danger { background: var(--danger); border-color: var(--danger); }
         button.small { width: auto; padding: 6px 12px; font-size: 0.8em; }
         .row { display: flex; gap: 10px; }
@@ -102,9 +100,6 @@
             color: var(--accent); letter-spacing: 1px; margin: 6px 0;
             word-break: break-all;
         }
-        .key-label {
-            font-size: 0.7em; color: #888; margin-top: 2px; margin-bottom: 8px;
-        }
 
         a { color: var(--accent); text-decoration: none; font-size: 0.85em; }
         a:hover { text-decoration: underline; }
@@ -125,18 +120,19 @@
         .stat .num { font-size: 1.6em; font-weight: 700; color: var(--accent); }
         .stat .lbl { font-size: 0.75em; color: #888; margin-top: 4px; }
 
-        .tip {
-            background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 6px;
-            padding: 10px 14px; font-size: 0.8em; color: #8a8; margin-top: 10px;
-        }
+        .tip { background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 6px; padding: 10px 14px; font-size: 0.8em; color: #8a8; margin-top: 10px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 600; }
+        .badge.green { background: #1a3a1a; color: var(--accent); }
+        .badge.red { background: #3a1a1a; color: var(--danger); }
+        .badge.yellow { background: #3a3a1a; color: var(--warn); }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>DILEMMA AUTH</h1>
-    <p class="subtitle">License Key Management Dashboard</p>
+    <p class="subtitle">License Key Management</p>
 
-    <!-- LOGIN CARD -->
+    <!-- LOGIN -->
     <div id="login-section" class="card">
         <h2>Admin Login</h2>
         <p style="font-size:0.85em;color:#888;margin-bottom:14px">Enter password to access the dashboard.</p>
@@ -150,9 +146,10 @@
             <div class="tab active" data-tab="generate" onclick="switchTab('generate')">Generate</div>
             <div class="tab" data-tab="manage" onclick="switchTab('manage')">Manage</div>
             <div class="tab" data-tab="export" onclick="switchTab('export')">Export</div>
+            <div class="tab" data-tab="settings" onclick="switchTab('settings')">Settings</div>
         </div>
 
-        <!-- Generate -->
+        <!-- Generate Tab -->
         <div id="tab-generate" class="tab-content active">
             <div class="card">
                 <h2>Generate License Keys</h2>
@@ -170,38 +167,64 @@
                     </div>
                 </div>
                 <div id="generated-keys"></div>
-                <div class="tip" style="display:none" id="gen-tip">
-                    Keys generated! Go to <strong>Export</strong> tab, download <code>keys.json</code>, and push it to GitHub.
-                </div>
+                <div id="sync-status" style="margin-top:10px;font-size:0.85em"></div>
             </div>
         </div>
 
-        <!-- Manage -->
+        <!-- Manage Tab -->
         <div id="tab-manage" class="tab-content">
             <div class="card">
                 <h2>Active License Keys</h2>
                 <div class="stats" id="stats"></div>
                 <div class="row" style="margin-bottom:12px">
-                    <input type="text" id="search" placeholder="Search by key hash..." oninput="renderKeys()">
+                    <input type="text" id="search" placeholder="Search by hash..." oninput="renderKeys()">
                     <button class="danger small" style="max-width:130px" onclick="revokeAll()">Revoke All</button>
                 </div>
                 <div class="key-list" id="key-list"></div>
             </div>
         </div>
 
-        <!-- Export -->
+        <!-- Export Tab -->
         <div id="tab-export" class="tab-content">
             <div class="card">
                 <h2>Export keys.json</h2>
                 <p style="font-size:0.85em;color:#888;margin-bottom:12px">
-                    Copy this file and push to your <code>KonvyBBy/Auth</code> GitHub repo.
-                    The launcher reads from <code>konvybby.github.io/Auth/keys.json</code>.
+                    Current key database being served by GitHub Pages.
                 </p>
                 <div class="output-area" id="export-output"></div>
                 <div style="margin-top:12px;display:flex;gap:10px">
-                    <button onclick="copyExport()">Copy to Clipboard</button>
-                    <button onclick="downloadExport()">Download .json</button>
+                    <button onclick="copyExport()">Copy</button>
+                    <button onclick="downloadExport()">Download</button>
+                    <button onclick="pushToGithub()" id="btn-push">Push to GitHub</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="tab-settings" class="tab-content">
+            <div class="card">
+                <h2>GitHub Auto-Push Setup</h2>
+                <p style="font-size:0.85em;color:#888;margin-bottom:14px">
+                    Enter a <strong>GitHub personal access token</strong> with <code>repo</code> scope.
+                    This is stored ONLY in your browser (localStorage), never in the source code.
+                    <a href="https://github.com/settings/tokens/new" target="_blank">Create token</a>
+                </p>
+                <div class="row" style="margin-bottom:12px">
+                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                    <button style="max-width:100px" onclick="saveToken()">Save</button>
+                </div>
+                <div id="token-status" style="font-size:0.85em">
+                    <span class="badge red">Not configured</span> Keys must be pushed manually.
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+                <h2>Change Admin Password</h2>
+                <div class="row" style="margin-bottom:12px">
+                    <input type="password" id="new-pw" placeholder="New password">
+                    <button style="max-width:100px" onclick="changePassword()">Update</button>
+                </div>
+                <div id="pw-status" style="font-size:0.85em"></div>
             </div>
         </div>
 
@@ -214,9 +237,10 @@
 </div>
 
 <script>
-const ADMIN_PW_HASH = 'e7b1c8f84b55c8d7c76c5e75e6e4e8fa1234567890abcdeffedcba0987654321'; // replace with real hash
 let keyDB = { keys: {}, version: 1 };
 let currentTab = 'generate';
+const REPO_OWNER = 'KonvyBBy';
+const REPO_NAME = 'Auth';
 
 // ---------- Init ----------
 (async function() {
@@ -224,12 +248,11 @@ let currentTab = 'generate';
         const resp = await fetch('keys.json?' + Date.now(), {cache: 'no-store'});
         const data = await resp.json();
         if (data && data.keys) keyDB = data;
-    } catch(e) {
-        // use empty DB
-    }
+    } catch(e) {}
     if (sessionStorage.getItem('authed') === '1') {
         showAdmin();
         refreshAll();
+        checkTokenStatus();
     }
 })();
 
@@ -237,19 +260,18 @@ let currentTab = 'generate';
 async function doLogin() {
     const pw = document.getElementById('password').value;
     if (!pw) return toast('Enter password', 'error');
-
     const encoder = new TextEncoder();
+    const saved = localStorage.getItem('admin_pw_hash');
+    const checkPw = saved || 'dilemma2026';
     const hashBuf = await crypto.subtle.digest('SHA-256', encoder.encode(pw));
     const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
-
-    // Generate expected hash from known password
-    const expectedBuf = await crypto.subtle.digest('SHA-256', encoder.encode('dilemma2026'));
-    const expectedHex = Array.from(new Uint8Array(expectedBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
-
-    if (hashHex === expectedHex) {
+    const expBuf = await crypto.subtle.digest('SHA-256', encoder.encode(checkPw));
+    const expHex = Array.from(new Uint8Array(expBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    if (hashHex === expHex) {
         sessionStorage.setItem('authed', '1');
         showAdmin();
         refreshAll();
+        checkTokenStatus();
         toast('Unlocked', 'success');
     } else {
         toast('Wrong password', 'error');
@@ -268,6 +290,18 @@ function showAdmin() {
     document.getElementById('admin-section').style.display = 'block';
 }
 
+function changePassword() {
+    const pw = document.getElementById('new-pw').value;
+    if (pw.length < 6) return toast('Password too short (6+ chars)', 'error');
+    const encoder = new TextEncoder();
+    crypto.subtle.digest('SHA-256', encoder.encode(pw)).then(buf => {
+        const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+        localStorage.setItem('admin_pw_hash', hex);
+        document.getElementById('pw-status').innerHTML = '<span class="badge green">Password updated</span>';
+        toast('Password changed', 'success');
+    });
+}
+
 // ---------- Tabs ----------
 function switchTab(name) {
     currentTab = name;
@@ -275,10 +309,37 @@ function switchTab(name) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
     if (name === 'manage') renderKeys();
     if (name === 'export') updateExport();
+    if (name === 'settings') checkTokenStatus();
+}
+
+// ---------- GitHub Token ----------
+function saveToken() {
+    const token = document.getElementById('gh-token').value.trim();
+    if (!token.startsWith('ghp_')) return toast('Invalid token format', 'error');
+    localStorage.setItem('gh_token', token);
+    checkTokenStatus();
+    toast('Token saved (browser only)', 'success');
+}
+
+function getToken() {
+    return localStorage.getItem('gh_token') || '';
+}
+
+function checkTokenStatus() {
+    const token = getToken();
+    const el = document.getElementById('token-status');
+    const btn = document.getElementById('btn-push');
+    if (token) {
+        el.innerHTML = '<span class="badge green">Configured</span> Keys auto-sync on generate.';
+        if (btn) btn.style.display = '';
+    } else {
+        el.innerHTML = '<span class="badge red">Not configured</span> Keys must be pushed manually.';
+        if (btn) btn.style.display = '';
+    }
 }
 
 // ---------- Generate ----------
-function generateKeys() {
+async function generateKeys() {
     const count = parseInt(document.getElementById('gen-count').value) || 1;
     const days = parseInt(document.getElementById('expiry-days').value) || 365;
     if (count < 1 || count > 20) return toast('Count: 1-20', 'error');
@@ -286,7 +347,10 @@ function generateKeys() {
 
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const div = document.getElementById('generated-keys');
+    const status = document.getElementById('sync-status');
     let html = '';
+    const newKeys = [];
+    const encoder = new TextEncoder();
 
     for (let i = 0; i < count; i++) {
         const parts = [];
@@ -296,33 +360,101 @@ function generateKeys() {
             parts.push(seg);
         }
         const key = parts.join('-');
-        const encoder = new TextEncoder();
-        const data = encoder.encode(key);
-
-        // Use a simple hash for synchronous-like behavior
-        // We'll do the actual SHA256 async
-        (async function(k, idx) {
-            const buf = await crypto.subtle.digest('SHA-256', encoder.encode(k));
-            const h = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-            const exp = new Date();
-            exp.setDate(exp.getDate() + days);
-            keyDB.keys[h] = {
-                created: new Date().toISOString(),
-                expires: exp.toISOString().split('T')[0]
-            };
-        })(key, i);
-
+        const buf = await crypto.subtle.digest('SHA-256', encoder.encode(key));
+        const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+        const exp = new Date();
+        exp.setDate(exp.getDate() + days);
+        keyDB.keys[hash] = {
+            created: new Date().toISOString(),
+            expires: exp.toISOString().split('T')[0]
+        };
+        newKeys.push({ key, hash });
         html += `<div class="generated-key">${key}</div>`;
     }
 
     div.innerHTML = html;
-    document.getElementById('gen-tip').style.display = 'block';
+    renderKeys();
+    updateExport();
 
-    setTimeout(() => {
-        renderKeys();
-        updateExport();
-        toast(`Generated ${count} key(s)`, 'success');
-    }, 300);
+    // Auto-push if token is set
+    const token = getToken();
+    if (token) {
+        status.innerHTML = '<span class="badge yellow">Syncing to GitHub...</span>';
+        try {
+            const result = await pushToGithubAPI(token, JSON.stringify(keyDB, null, 2));
+            if (result) {
+                status.innerHTML = '<span class="badge green">Synced to GitHub</span>';
+                toast(`Generated ${count} key(s) + auto-pushed!`, 'success');
+            } else {
+                status.innerHTML = '<span class="badge red">Sync failed — check token or push manually</span>';
+                toast(`Generated ${count} key(s). Push manually.`, 'error');
+            }
+        } catch(e) {
+            status.innerHTML = '<span class="badge red">Sync error — push manually from Export tab</span>';
+            toast(`Generated ${count} key(s). Auto-push failed.`, 'error');
+        }
+    } else {
+        status.innerHTML = '<span class="badge yellow">Set up GitHub token in Settings for auto-push</span>';
+        toast(`Generated ${count} key(s) — push via Export tab`, 'success');
+    }
+}
+
+// ---------- GitHub Push ----------
+async function pushToGithub() {
+    const token = getToken();
+    if (!token) { toast('Set up GitHub token in Settings first', 'error'); return; }
+    const btn = document.getElementById('btn-push');
+    btn.disabled = true;
+    btn.textContent = 'Pushing...';
+    const ok = await pushToGithubAPI(token, JSON.stringify(keyDB, null, 2));
+    btn.disabled = false;
+    btn.textContent = 'Push to GitHub';
+    if (ok) {
+        toast('Pushed to GitHub!', 'success');
+    } else {
+        toast('Push failed. Check token or network.', 'error');
+    }
+}
+
+async function pushToGithubAPI(token, content) {
+    try {
+        // Get current file SHA
+        let sha = '';
+        try {
+            const resp = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/keys.json`,
+                { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+            );
+            if (resp.ok) {
+                const data = await resp.json();
+                sha = data.sha || '';
+            }
+        } catch(e) {}
+
+        // Push
+        const body = {
+            message: 'Update keys.json (' + new Date().toISOString().split('T')[0] + ')',
+            content: btoa(unescape(encodeURIComponent(content))),
+            branch: 'main'
+        };
+        if (sha) body.sha = sha;
+
+        const resp = await fetch(
+            `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/keys.json`,
+            {
+                method: 'PUT',
+                headers: {
+                    Authorization: `token ${token}`,
+                    Accept: 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }
+        );
+        return resp.ok;
+    } catch(e) {
+        return false;
+    }
 }
 
 // ---------- Manage ----------
@@ -330,10 +462,7 @@ function renderKeys() {
     const list = document.getElementById('key-list');
     const search = (document.getElementById('search')?.value || '').trim();
     const entries = Object.entries(keyDB.keys);
-
-    const filtered = search
-        ? entries.filter(([h]) => h.includes(search))
-        : entries;
+    const filtered = search ? entries.filter(([h]) => h.includes(search)) : entries;
 
     if (filtered.length === 0) {
         list.innerHTML = '<div style="padding:24px;text-align:center;color:#555">No keys found</div>';
@@ -344,11 +473,10 @@ function renderKeys() {
             const ok = exp > now;
             return `<div class="key-item">
                 <div style="flex:1;min-width:0">
-                    <div style="font-family:Consolas,monospace;font-size:0.78em;color:#fff">${hash.substring(0,12)}...${hash.substring(hash.length-12)}</div>
+                    <div style="font-family:Consolas,monospace;font-size:0.78em;color:#fff">${hash.substring(0,10)}...${hash.substring(hash.length-10)}</div>
                     <div class="meta">
                         <span class="${ok ? 'valid' : 'expired'}">${ok ? 'ACTIVE' : 'EXPIRED'}</span>
                         &middot; Expires ${info.expires}
-                        &middot; Created ${(info.created||'').substring(0,10)}
                     </div>
                 </div>
                 <button class="danger small" style="margin-left:10px;flex-shrink:0" onclick="revokeKey('${hash}')">Revoke</button>
@@ -356,30 +484,43 @@ function renderKeys() {
         }).join('');
     }
 
-    // Stats
     const total = entries.length;
     const valid = entries.filter(([h, v]) => new Date(v.expires) > new Date()).length;
     document.getElementById('stats').innerHTML = `
-        <div class="stat"><div class="num">${total}</div><div class="lbl">Total Keys</div></div>
+        <div class="stat"><div class="num">${total}</div><div class="lbl">Total</div></div>
         <div class="stat"><div class="num">${valid}</div><div class="lbl">Active</div></div>
         <div class="stat"><div class="num">${total - valid}</div><div class="lbl">Expired</div></div>
     `;
 }
 
-function revokeKey(hash) {
-    if (!confirm('Permanently revoke this key?')) return;
+async function revokeKey(hash) {
+    if (!confirm('Revoke this key?')) return;
     delete keyDB.keys[hash];
     renderKeys();
     updateExport();
-    toast('Key revoked', 'error');
+    const token = getToken();
+    if (token) {
+        toast('Key revoked — syncing...', 'success');
+        await pushToGithubAPI(token, JSON.stringify(keyDB, null, 2));
+        toast('Key revoked + synced', 'success');
+    } else {
+        toast('Key revoked — push from Export tab', 'success');
+    }
 }
 
-function revokeAll() {
-    if (!confirm('Delete ALL keys? This cannot be undone.')) return;
+async function revokeAll() {
+    if (!confirm('Delete ALL keys?')) return;
     keyDB.keys = {};
     renderKeys();
     updateExport();
-    toast('All keys deleted', 'error');
+    const token = getToken();
+    if (token) {
+        toast('All revoked — syncing...', 'error');
+        await pushToGithubAPI(token, JSON.stringify(keyDB, null, 2));
+        toast('All revoked + synced', 'error');
+    } else {
+        toast('All revoked — push from Export tab', 'error');
+    }
 }
 
 // ---------- Export ----------
@@ -388,17 +529,17 @@ function updateExport() {
 }
 
 function copyExport() {
-    const text = document.getElementById('export-output').textContent;
-    navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!', 'success'));
+    navigator.clipboard.writeText(document.getElementById('export-output').textContent)
+        .then(() => toast('Copied!', 'success'));
 }
 
 function downloadExport() {
     const blob = new Blob([JSON.stringify(keyDB, null, 2)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = 'keys.json'; a.click();
-    URL.revokeObjectURL(url);
-    toast('Downloaded', 'success');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'keys.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
 }
 
 // ---------- Utils ----------
@@ -406,7 +547,7 @@ function toast(msg, type) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = 'toast ' + type + ' show';
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function refreshAll() {
