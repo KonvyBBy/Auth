@@ -1,0 +1,52 @@
+name: Generate Dilemma Keys
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: 'How many keys'
+        required: true
+        default: '1'
+      days:
+        description: 'Validity in days'
+        required: true
+        default: '365'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install cryptography
+        run: pip install cryptography
+
+      - name: Generate keys
+        env:
+          SKGL_PRIVATE_KEY: ${{ secrets.SKGL_PRIVATE_KEY }}
+          INPUT_COUNT: ${{ github.event.inputs.count }}
+          INPUT_DAYS: ${{ github.event.inputs.days }}
+        run: python keygen_ci.py
+
+      - name: Commit updated keys.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add keys.json
+          git diff --cached --quiet && echo "no changes" || git commit -m "Auto-update keys.json (CI keygen)"
+          git push
+
+      - name: Upload generated keys
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-keys
+          path: generated_keys.txt
