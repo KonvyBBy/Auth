@@ -28,7 +28,7 @@ def main():
 
     now = int(datetime.now(timezone.utc).timestamp())
     expires_ts = int((datetime.now(timezone.utc) + timedelta(days=days)).timestamp())
-    expires_str = datetime.now().strftime("%Y-%m-%d")
+    expires_str = (datetime.now(timezone.utc) + timedelta(days=days)).strftime("%Y-%m-%d")
 
     db = {"keys": {}, "version": 3}
     if os.path.exists(KEY_FILE):
