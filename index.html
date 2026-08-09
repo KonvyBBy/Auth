@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilemma Auth</title>
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --surface: #1a1a1a;
+            --border: #2a2a2a;
+            --text: #ccc;
+            --accent: #4CAF50;
+            --danger: #f44336;
+            --warn: #ff9800;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+        .container { width: 100%; max-width: 720px; }
+        h1 { color: var(--accent); font-size: 1.8em; text-align: center; margin-bottom: 4px; }
+        .subtitle { text-align: center; color: #666; font-size: 0.85em; margin-bottom: 24px; }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .card h2 { font-size: 1.1em; margin-bottom: 16px; color: #fff; }
+
+        input, button, select {
+            background: #111;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-family: inherit;
+            outline: none;
+            width: 100%;
+        }
+        input:focus, select:focus { border-color: var(--accent); }
+        button {
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.15s;
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        button:hover { filter: brightness(1.15); }
+        button.danger { background: var(--danger); border-color: var(--danger); }
+        button.small { width: auto; padding: 6px 12px; font-size: 0.8em; }
+        .row { display: flex; gap: 10px; }
+        .row > * { flex: 1; }
+
+        .key-list { max-height: 400px; overflow-y: auto; }
+        .key-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 12px; border-bottom: 1px solid var(--border);
+            font-size: 0.82em;
+        }
+        .key-item:last-child { border-bottom: none; }
+        .key-item .hash { color: #888; font-family: 'Consolas', monospace; font-size: 0.75em; }
+        .key-item .meta { color: #888; font-size: 0.75em; margin-top: 2px; }
+        .key-item .meta .valid { color: var(--accent); font-weight: 600; }
+        .key-item .meta .expired { color: var(--danger); font-weight: 600; }
+
+        .toast {
+            position: fixed; bottom: 20px; right: 20px;
+            padding: 12px 20px; border-radius: 8px; color: #fff;
+            font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+        .toast.success { background: var(--accent); }
+        .toast.error { background: var(--danger); }
+
+        .output-area {
+            background: #000; border: 1px solid var(--border);
+            border-radius: 8px; padding: 16px; font-family: 'Consolas', monospace;
+            font-size: 0.78em; max-height: 280px; overflow-y: auto;
+            white-space: pre-wrap; word-break: break-all; color: #aaa;
+        }
+
+        #login-section { display: block; }
+        #admin-section { display: none; }
+
+        .generated-key {
+            background: #0a2a0a; border: 1px solid var(--accent);
+            border-radius: 8px; padding: 14px; text-align: center;
+            font-family: 'Consolas', monospace; font-size: 1.2em;
+            color: var(--accent); letter-spacing: 1px; margin: 6px 0;
+            word-break: break-all;
+        }
+        .key-label {
+            font-size: 0.7em; color: #888; margin-top: 2px; margin-bottom: 8px;
+        }
+
+        a { color: var(--accent); text-decoration: none; font-size: 0.85em; }
+        a:hover { text-decoration: underline; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 24px; }
+        .tab {
+            padding: 8px 20px; border-radius: 8px 8px 0 0;
+            background: transparent; border: 1px solid transparent;
+            color: #888; cursor: pointer; font-size: 0.9em; font-weight: 600;
+            user-select: none;
+        }
+        .tab.active { background: var(--surface); border-color: var(--border); border-bottom-color: var(--surface); color: #fff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .stats { display: flex; gap: 12px; margin-bottom: 16px; }
+        .stat { flex: 1; background: #111; border-radius: 8px; padding: 14px; text-align: center; }
+        .stat .num { font-size: 1.6em; font-weight: 700; color: var(--accent); }
+        .stat .lbl { font-size: 0.75em; color: #888; margin-top: 4px; }
+
+        .tip {
+            background: #1a2a1a; border: 1px solid #2a4a2a; border-radius: 6px;
+            padding: 10px 14px; font-size: 0.8em; color: #8a8; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>DILEMMA AUTH</h1>
+    <p class="subtitle">License Key Management Dashboard</p>
+
+    <!-- LOGIN CARD -->
+    <div id="login-section" class="card">
+        <h2>Admin Login</h2>
+        <p style="font-size:0.85em;color:#888;margin-bottom:14px">Enter password to access the dashboard.</p>
+        <input type="password" id="password" placeholder="Admin password" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')doLogin()">
+        <button onclick="doLogin()">Unlock</button>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="admin-section">
+        <div class="tabs">
+            <div class="tab active" data-tab="generate" onclick="switchTab('generate')">Generate</div>
+            <div class="tab" data-tab="manage" onclick="switchTab('manage')">Manage</div>
+            <div class="tab" data-tab="export" onclick="switchTab('export')">Export</div>
+        </div>
+
+        <!-- Generate -->
+        <div id="tab-generate" class="tab-content active">
+            <div class="card">
+                <h2>Generate License Keys</h2>
+                <div class="row" style="margin-bottom:12px">
+                    <div>
+                        <label style="font-size:0.8em;color:#888">Expiry (days)</label>
+                        <input type="number" id="expiry-days" value="365" min="1" max="3650">
+                    </div>
+                    <div>
+                        <label style="font-size:0.8em;color:#888">Count</label>
+                        <input type="number" id="gen-count" value="1" min="1" max="20">
+                    </div>
+                    <div style="display:flex;align-items:flex-end">
+                        <button onclick="generateKeys()">Generate</button>
+                    </div>
+                </div>
+                <div id="generated-keys"></div>
+                <div class="tip" style="display:none" id="gen-tip">
+                    Keys generated! Go to <strong>Export</strong> tab, download <code>keys.json</code>, and push it to GitHub.
+                </div>
+            </div>
+        </div>
+
+        <!-- Manage -->
+        <div id="tab-manage" class="tab-content">
+            <div class="card">
+                <h2>Active License Keys</h2>
+                <div class="stats" id="stats"></div>
+                <div class="row" style="margin-bottom:12px">
+                    <input type="text" id="search" placeholder="Search by key hash..." oninput="renderKeys()">
+                    <button class="danger small" style="max-width:130px" onclick="revokeAll()">Revoke All</button>
+                </div>
+                <div class="key-list" id="key-list"></div>
+            </div>
+        </div>
+
+        <!-- Export -->
+        <div id="tab-export" class="tab-content">
+            <div class="card">
+                <h2>Export keys.json</h2>
+                <p style="font-size:0.85em;color:#888;margin-bottom:12px">
+                    Copy this file and push to your <code>KonvyBBy/Auth</code> GitHub repo.
+                    The launcher reads from <code>konvybby.github.io/Auth/keys.json</code>.
+                </p>
+                <div class="output-area" id="export-output"></div>
+                <div style="margin-top:12px;display:flex;gap:10px">
+                    <button onclick="copyExport()">Copy to Clipboard</button>
+                    <button onclick="downloadExport()">Download .json</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center;margin-top:12px;padding-bottom:40px">
+            <a href="#" onclick="doLogout()">Lock panel</a>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const ADMIN_PW_HASH = 'e7b1c8f84b55c8d7c76c5e75e6e4e8fa1234567890abcdeffedcba0987654321'; // replace with real hash
+let keyDB = { keys: {}, version: 1 };
+let currentTab = 'generate';
+
+// ---------- Init ----------
+(async function() {
+    try {
+        const resp = await fetch('keys.json?' + Date.now(), {cache: 'no-store'});
+        const data = await resp.json();
+        if (data && data.keys) keyDB = data;
+    } catch(e) {
+        // use empty DB
+    }
+    if (sessionStorage.getItem('authed') === '1') {
+        showAdmin();
+        refreshAll();
+    }
+})();
+
+// ---------- Auth ----------
+async function doLogin() {
+    const pw = document.getElementById('password').value;
+    if (!pw) return toast('Enter password', 'error');
+
+    const encoder = new TextEncoder();
+    const hashBuf = await crypto.subtle.digest('SHA-256', encoder.encode(pw));
+    const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+    // Generate expected hash from known password
+    const expectedBuf = await crypto.subtle.digest('SHA-256', encoder.encode('dilemma2026'));
+    const expectedHex = Array.from(new Uint8Array(expectedBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+    if (hashHex === expectedHex) {
+        sessionStorage.setItem('authed', '1');
+        showAdmin();
+        refreshAll();
+        toast('Unlocked', 'success');
+    } else {
+        toast('Wrong password', 'error');
+    }
+}
+
+function doLogout() {
+    sessionStorage.removeItem('authed');
+    document.getElementById('login-section').style.display = 'block';
+    document.getElementById('admin-section').style.display = 'none';
+    toast('Locked', 'error');
+}
+
+function showAdmin() {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('admin-section').style.display = 'block';
+}
+
+// ---------- Tabs ----------
+function switchTab(name) {
+    currentTab = name;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
+    if (name === 'manage') renderKeys();
+    if (name === 'export') updateExport();
+}
+
+// ---------- Generate ----------
+function generateKeys() {
+    const count = parseInt(document.getElementById('gen-count').value) || 1;
+    const days = parseInt(document.getElementById('expiry-days').value) || 365;
+    if (count < 1 || count > 20) return toast('Count: 1-20', 'error');
+    if (days < 1 || days > 3650) return toast('Days: 1-3650', 'error');
+
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const div = document.getElementById('generated-keys');
+    let html = '';
+
+    for (let i = 0; i < count; i++) {
+        const parts = [];
+        for (let p = 0; p < 4; p++) {
+            let seg = '';
+            for (let c = 0; c < 5; c++) seg += chars[Math.floor(Math.random() * chars.length)];
+            parts.push(seg);
+        }
+        const key = parts.join('-');
+        const encoder = new TextEncoder();
+        const data = encoder.encode(key);
+
+        // Use a simple hash for synchronous-like behavior
+        // We'll do the actual SHA256 async
+        (async function(k, idx) {
+            const buf = await crypto.subtle.digest('SHA-256', encoder.encode(k));
+            const h = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+            const exp = new Date();
+            exp.setDate(exp.getDate() + days);
+            keyDB.keys[h] = {
+                created: new Date().toISOString(),
+                expires: exp.toISOString().split('T')[0]
+            };
+        })(key, i);
+
+        html += `<div class="generated-key">${key}</div>`;
+    }
+
+    div.innerHTML = html;
+    document.getElementById('gen-tip').style.display = 'block';
+
+    setTimeout(() => {
+        renderKeys();
+        updateExport();
+        toast(`Generated ${count} key(s)`, 'success');
+    }, 300);
+}
+
+// ---------- Manage ----------
+function renderKeys() {
+    const list = document.getElementById('key-list');
+    const search = (document.getElementById('search')?.value || '').trim();
+    const entries = Object.entries(keyDB.keys);
+
+    const filtered = search
+        ? entries.filter(([h]) => h.includes(search))
+        : entries;
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<div style="padding:24px;text-align:center;color:#555">No keys found</div>';
+    } else {
+        list.innerHTML = filtered.map(([hash, info]) => {
+            const now = new Date();
+            const exp = new Date(info.expires);
+            const ok = exp > now;
+            return `<div class="key-item">
+                <div style="flex:1;min-width:0">
+                    <div style="font-family:Consolas,monospace;font-size:0.78em;color:#fff">${hash.substring(0,12)}...${hash.substring(hash.length-12)}</div>
+                    <div class="meta">
+                        <span class="${ok ? 'valid' : 'expired'}">${ok ? 'ACTIVE' : 'EXPIRED'}</span>
+                        &middot; Expires ${info.expires}
+                        &middot; Created ${(info.created||'').substring(0,10)}
+                    </div>
+                </div>
+                <button class="danger small" style="margin-left:10px;flex-shrink:0" onclick="revokeKey('${hash}')">Revoke</button>
+            </div>`;
+        }).join('');
+    }
+
+    // Stats
+    const total = entries.length;
+    const valid = entries.filter(([h, v]) => new Date(v.expires) > new Date()).length;
+    document.getElementById('stats').innerHTML = `
+        <div class="stat"><div class="num">${total}</div><div class="lbl">Total Keys</div></div>
+        <div class="stat"><div class="num">${valid}</div><div class="lbl">Active</div></div>
+        <div class="stat"><div class="num">${total - valid}</div><div class="lbl">Expired</div></div>
+    `;
+}
+
+function revokeKey(hash) {
+    if (!confirm('Permanently revoke this key?')) return;
+    delete keyDB.keys[hash];
+    renderKeys();
+    updateExport();
+    toast('Key revoked', 'error');
+}
+
+function revokeAll() {
+    if (!confirm('Delete ALL keys? This cannot be undone.')) return;
+    keyDB.keys = {};
+    renderKeys();
+    updateExport();
+    toast('All keys deleted', 'error');
+}
+
+// ---------- Export ----------
+function updateExport() {
+    document.getElementById('export-output').textContent = JSON.stringify(keyDB, null, 2);
+}
+
+function copyExport() {
+    const text = document.getElementById('export-output').textContent;
+    navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!', 'success'));
+}
+
+function downloadExport() {
+    const blob = new Blob([JSON.stringify(keyDB, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'keys.json'; a.click();
+    URL.revokeObjectURL(url);
+    toast('Downloaded', 'success');
+}
+
+// ---------- Utils ----------
+function toast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function refreshAll() {
+    renderKeys();
+    updateExport();
+}
+</script>
+</body>
+</html>
