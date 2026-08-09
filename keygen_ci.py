@@ -56,9 +56,12 @@ def main():
             "result": 0, "message": "",
         })
         generated.append(key_str)
+        short_id = f"DIL-{key_id}"
         db["keys"][hashlib.sha256(key_str.encode()).hexdigest()] = {
             "created": datetime.now().isoformat(),
             "expires": expires_str,
+            "id": short_id,
+            "key": key_str,
         }
 
     with open(KEY_FILE, "w") as f:
