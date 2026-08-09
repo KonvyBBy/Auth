@@ -1,22 +1,23 @@
 {
   "keys": {
-    "3cc38d364bc531308315a605725b655a00f7f162da4db1d09c6e4b36ff438ca0": {
-      "created": "2026-08-09T08:19:42.884015",
-      "expires": "2026-09-08",
-      "id": "DIL-1786263582000",
-      "key": "{\"licenseKey\": \"eyJQcm9kdWN0SWQiOiAxLCAiSUQiOiAxNzg2MjYzNTgyMDAwLCAiS2V5IjogIkRJTC0xNzg2MjYzNTgyMDAwIiwgIkNyZWF0ZWQiOiAxNzg2MjYzNTgyLCAiRXhwaXJlcyI6IDE3ODg4NTU1ODIsICJQZXJpb2QiOiAzMCwgIkYxIjogZmFsc2UsICJGMiI6IGZhbHNlLCAiRjMiOiBmYWxzZSwgIkY0IjogZmFsc2UsICJGNSI6IGZhbHNlLCAiRjYiOiBmYWxzZSwgIkY3IjogZmFsc2UsICJGOCI6IGZhbHNlLCAiTm90ZXMiOiAiIiwgIkJsb2NrIjogMCwgIkdsb2JhbElkIjogMCwgIkN1c3RvbWVyIjogbnVsbCwgIkFjdGl2YXRlZE1hY2hpbmVzIjogW10sICJUcmlhbEFjdGl2YXRpb24iOiAwLCAiTWF4Tm9PZk1hY2hpbmVzIjogMCwgIkFsbG93ZWRNYWNoaW5lcyI6IFtdLCAiRGF0YU9iamVjdHMiOiBudWxsLCAiU2lnbkRhdGUiOiAxNzg2MjYzNTgyLCAiUmVzZWxsZXIiOiBudWxsfQ==\", \"signature\": \"nWWjUMVc2xAomjh3v+h8HaMc8lErjLTB/Sd5Z65g5UvD6DNiFNwynXy4X5RxvV1GOyVBftUbr5QGnLC1TyBlUiwYMEIdEpI4QIT/d5DjhJChIfcLRUfimK+G4pkMyzkcngodP/HTCXNZ2Da+/n/HOVJ/mbAnDMRw7w7TXiXaHeYFM4KsdN4vxCC5N11LdCM+wJTPhfZOxRucL3w9cUJ58zg2LWPW3GZlx//7yx0an89Gyzep3O6RkMpA4HP9ejlNEmoP6bXFeA9WuL9NmPAnQ5B4gkbBaVtUNIMm+TP20lbSDnmee/y8pjvTXZGLrjqbyN5rueOXagPMubHVUqHPIw==\", \"result\": 0, \"message\": \"\"}"
+    "722f57c5e0aa3843878b42dc997e401755b5bb01d5c7fb50c4c3dca2db0e0e85": {
+      "created": "2026-08-09T02:34:04.728527",
+      "expires": "2026-08-09"
     },
-    "37638dd597e60f13de8469718510acb5e57b129cb3f75073aa349adf8c96d462": {
-      "created": "2026-08-09T08:20:24.503510",
-      "expires": "2026-09-08",
-      "id": "DIL-1786263624000",
-      "key": "{\"licenseKey\": \"eyJQcm9kdWN0SWQiOiAxLCAiSUQiOiAxNzg2MjYzNjI0MDAwLCAiS2V5IjogIkRJTC0xNzg2MjYzNjI0MDAwIiwgIkNyZWF0ZWQiOiAxNzg2MjYzNjI0LCAiRXhwaXJlcyI6IDE3ODg4NTU2MjQsICJQZXJpb2QiOiAzMCwgIkYxIjogZmFsc2UsICJGMiI6IGZhbHNlLCAiRjMiOiBmYWxzZSwgIkY0IjogZmFsc2UsICJGNSI6IGZhbHNlLCAiRjYiOiBmYWxzZSwgIkY3IjogZmFsc2UsICJGOCI6IGZhbHNlLCAiTm90ZXMiOiAiIiwgIkJsb2NrIjogMCwgIkdsb2JhbElkIjogMCwgIkN1c3RvbWVyIjogbnVsbCwgIkFjdGl2YXRlZE1hY2hpbmVzIjogW10sICJUcmlhbEFjdGl2YXRpb24iOiAwLCAiTWF4Tm9PZk1hY2hpbmVzIjogMCwgIkFsbG93ZWRNYWNoaW5lcyI6IFtdLCAiRGF0YU9iamVjdHMiOiBudWxsLCAiU2lnbkRhdGUiOiAxNzg2MjYzNjI0LCAiUmVzZWxsZXIiOiBudWxsfQ==\", \"signature\": \"BygtDU9mTwUTAjQK4WbE0/9bKi+gJNzSOc7sNfDx5ij3P2WuPkyQ1ZZBu0F8uQe1C1Ur8urifSubKQNOp0z+eCve9Hb1iMUoz9S7vvVs5cLaNik/OuULcExTcX9F/wwM7XuRFplL44lmst4s5jB4W8xolggVc+13PKAkmWnBVMrypADyHmS1KyN2KsV/mRU9KfynF9ubHd1iqNPXa7W7TCcesfgDs2SqNZlIn1g4I5fJi5+RtVLbmMqIGA38TVmVXrda3D6ttKliPvfwQgDynlk99hB1e2EM+Lf7jYaYVVSW+EiaK1+b6/9ulZ+YqxRHIr51HeuYeA0WGHozuX2oMQ==\", \"result\": 0, \"message\": \"\"}"
+    "f1f91b1e62053cf8f5ff8c5822362d311307c9a57cdcf51a1f3be33cb82d22e3": {
+      "created": "2026-08-09T02:34:04.729100",
+      "expires": "2026-08-09"
     },
-    "1842500eec29f59437766344b5e0f261d628de8b1ff74768ee9f0d10e7133a31": {
-      "created": "2026-08-09T08:32:54.168303",
-      "expires": "2026-08-10",
-      "id": "DIL-1786264374000",
-      "key": "{\"licenseKey\": \"eyJQcm9kdWN0SWQiOiAxLCAiSUQiOiAxNzg2MjY0Mzc0MDAwLCAiS2V5IjogIkRJTC0xNzg2MjY0Mzc0MDAwIiwgIkNyZWF0ZWQiOiAxNzg2MjY0Mzc0LCAiRXhwaXJlcyI6IDE3ODYzNTA3NzQsICJQZXJpb2QiOiAxLCAiRjEiOiBmYWxzZSwgIkYyIjogZmFsc2UsICJGMyI6IGZhbHNlLCAiRjQiOiBmYWxzZSwgIkY1IjogZmFsc2UsICJGNiI6IGZhbHNlLCAiRjciOiBmYWxzZSwgIkY4IjogZmFsc2UsICJOb3RlcyI6ICIiLCAiQmxvY2siOiAwLCAiR2xvYmFsSWQiOiAwLCAiQ3VzdG9tZXIiOiBudWxsLCAiQWN0aXZhdGVkTWFjaGluZXMiOiBbXSwgIlRyaWFsQWN0aXZhdGlvbiI6IDAsICJNYXhOb09mTWFjaGluZXMiOiAwLCAiQWxsb3dlZE1hY2hpbmVzIjogW10sICJEYXRhT2JqZWN0cyI6IG51bGwsICJTaWduRGF0ZSI6IDE3ODYyNjQzNzQsICJSZXNlbGxlciI6IG51bGx9\", \"signature\": \"KFQ1MbhXcczR76jsDeFP7+sMAtQuY6Z9C8Wz7hVlmzd0ceBhq5bLbHk+7v53MPyyZV5VK2f3nWiLGvwgf+pMRL64OqRv7NHhFiA5GEpl0t/Eb5ap9sLX5XDpaLPhz1xeyrrnNa0vo+BD20ujts+gD+IWhF4cVZGpYv1tnkGjJeqiTfWvF1koIiNk0EnADY7mDqu6aIbmMToDgnttr90kvIanGIixF8PUPhIk5aALWdASwNocj6lU1fdn5SBxsquCj6dsdOIJyVCVc+GRqO72WR6jMvyVlqL6L6cL4XMGnYLcRzWH9OgiGDRZAFWTscB+QiWBFukyHiyXSQc96g43TA==\", \"result\": 0, \"message\": \"\"}"
+    "90c3bead35a4a1c9f4bebae3f60fad26b6d741ef78cbd4ac989db8f22c83ea31": {
+      "created": "2026-08-09T04:56:24.040462",
+      "expires": "2027-08-09",
+      "id": "DIL-86269332",
+      "key": "{\"licenseKey\": \"eyJQcm9kdWN0SWQiOiAxLCAiSUQiOiA4NjI2OTMzMiwgIktleSI6ICJESUwtODYyNjkzMzIiLCAiQ3JlYXRlZCI6IDE3ODYyNjkzODQsICJFeHBpcmVzIjogMTgxNzgwNTM4NCwgIlBlcmlvZCI6IDM2NSwgIkYxIjogZmFsc2UsICJGMiI6IGZhbHNlLCAiRjMiOiBmYWxzZSwgIkY0IjogZmFsc2UsICJGNSI6IGZhbHNlLCAiRjYiOiBmYWxzZSwgIkY3IjogZmFsc2UsICJGOCI6IGZhbHNlLCAiTm90ZXMiOiAiIiwgIkJsb2NrIjogMCwgIkdsb2JhbElkIjogMCwgIkN1c3RvbWVyIjogbnVsbCwgIkFjdGl2YXRlZE1hY2hpbmVzIjogW10sICJUcmlhbEFjdGl2YXRpb24iOiAwLCAiTWF4Tm9PZk1hY2hpbmVzIjogMCwgIkFsbG93ZWRNYWNoaW5lcyI6IFtdLCAiRGF0YU9iamVjdHMiOiBudWxsLCAiU2lnbkRhdGUiOiAxNzg2MjY5Mzg0LCAiUmVzZWxsZXIiOiBudWxsfQ==\", \"signature\": \"VxTDHaudLc9I1s98wrmquOzuBxS47c9E0CbMUwKwkt93RDdXZK1gYw5uP3br9+RfGLSp8bQUnrG2e9429EiB/wnJEpyQrcxobsfBtSSKNrzvl7ys3z6ZAId573IUy3OzoXeXOcRg6q8iZ3ySm4xfZe2lidQYZYewqD4B+ftqf+t6cwAPyACJxH6N2JvpdwxeLk6ytX3NCZBjltp6J7uVAzSei05oT6fzvLD9VA+RcoQvEHyWM43M1WZa9dMToqsbJ/a2CaMlRMyQM3zsI27qDqsK3F90SC7KC06qD7qLzzRSG0mAPHPow8PCulGrOg0/ozZ+Me/xAQ5XGSLYfvJEGw==\", \"result\": 0, \"message\": \"\"}"
+    },
+    "2K-ABC12-DEF34-GHI56-JKL78": {
+      "dur": 86400,
+      "level": "Standard",
+      "created": 1700000000000
     }
   },
   "version": 3
