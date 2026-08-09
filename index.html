@@ -424,8 +424,8 @@ async function generateKeys() {
 
         const keys = text.split('\n').filter(l => l.trim());
         div.innerHTML = keys.map((k, i) => `
-            <div class="key-result">${escapeHtml(k)}
-                <button class="copy-btn" onclick="copyKey(this)">Copy</button>
+            <div class="key-result">${escapeHtml(shortKey(k))}
+                <button class="copy-btn" onclick="copyKey(this, '${escapeHtml(shortKey(k))}')">Copy</button>
             </div>`).join('');
 
         status.innerHTML = `<span class="badge green">${keys.length} key(s) generated & synced to keys.json</span>`;
@@ -441,8 +441,16 @@ function escapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function copyKey(btn) {
-    const text = btn.closest('.key-result').childNodes[0].textContent.trim();
+function shortKey(k) {
+    try {
+        const parsed = JSON.parse(k);
+        const lic = JSON.parse(atob(parsed.licenseKey));
+        if (lic && lic.Key) return lic.Key;
+    } catch(e) {}
+    return k;
+}
+
+function copyKey(btn, text) {
     navigator.clipboard.writeText(text).then(() => {
         btn.textContent = 'Copied!';
         setTimeout(() => btn.textContent = 'Copy', 1500);
