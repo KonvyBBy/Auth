@@ -15,6 +15,12 @@
       "expires": "2026-08-09",
       "id": "DIL-1786262681000",
       "key": "{\"licenseKey\": \"eyJQcm9kdWN0SWQiOiAxLCAiSUQiOiAxNzg2MjYyNjgxMDAwLCAiS2V5IjogIkRJTC0xNzg2MjYyNjgxMDAwIiwgIkNyZWF0ZWQiOiAxNzg2MjYyNjgxLCAiRXhwaXJlcyI6IDE3ODg4NTQ2ODEsICJQZXJpb2QiOiAzMCwgIkYxIjogZmFsc2UsICJGMiI6IGZhbHNlLCAiRjMiOiBmYWxzZSwgIkY0IjogZmFsc2UsICJGNSI6IGZhbHNlLCAiRjYiOiBmYWxzZSwgIkY3IjogZmFsc2UsICJGOCI6IGZhbHNlLCAiTm90ZXMiOiAiIiwgIkJsb2NrIjogMCwgIkdsb2JhbElkIjogMCwgIkN1c3RvbWVyIjogbnVsbCwgIkFjdGl2YXRlZE1hY2hpbmVzIjogW10sICJUcmlhbEFjdGl2YXRpb24iOiAwLCAiTWF4Tm9PZk1hY2hpbmVzIjogMCwgIkFsbG93ZWRNYWNoaW5lcyI6IFtdLCAiRGF0YU9iamVjdHMiOiBudWxsLCAiU2lnbkRhdGUiOiAxNzg2MjYyNjgxLCAiUmVzZWxsZXIiOiBudWxsfQ==\", \"signature\": \"RhooeSCwAjN1BP6gOJY++mwOKFoycAv/9NlMK0f82oCjasDl48yvcElqEImGz3CwoGWj9dFKgGw1pAN1sh8CBc6FsOOGHLld4p+UUAV+WOSjGZj9nJMGfcIKWujP/AvT13fPNkG1FiHzZh5V1Myn3wEZ5E4GSknpDTvkdN31GBDwi22Gs/ksNA6moLfNT69U29hBfYxh0YhHaU+EFB5rzaixIwov+8Q09q72Ibtni1BcHr/5qjvv78D50hNWDx2XibTmoR7Qg5SeV1yATUPzEkbj8gmCPgD3uppN3JFZvjBYvTJNnt9h021jAjOu4tZw+IlGel3B/XQSvT2jPVPgvA==\", \"result\": 0, \"message\": \"\"}"
+    },
+    "5e64ddab539d48c3fd91682a66f16d384f8ef5b6d7d7c5a2727baae388b7fe86": {
+      "created": "2026-08-09T08:05:13.905652",
+      "expires": "2026-08-09",
+      "id": "DIL-1786262713000",
+      "key": "{\"licenseKey\": \"eyJQcm9kdWN0SWQiOiAxLCAiSUQiOiAxNzg2MjYyNzEzMDAwLCAiS2V5IjogIkRJTC0xNzg2MjYyNzEzMDAwIiwgIkNyZWF0ZWQiOiAxNzg2MjYyNzEzLCAiRXhwaXJlcyI6IDE3ODg4NTQ3MTMsICJQZXJpb2QiOiAzMCwgIkYxIjogZmFsc2UsICJGMiI6IGZhbHNlLCAiRjMiOiBmYWxzZSwgIkY0IjogZmFsc2UsICJGNSI6IGZhbHNlLCAiRjYiOiBmYWxzZSwgIkY3IjogZmFsc2UsICJGOCI6IGZhbHNlLCAiTm90ZXMiOiAiIiwgIkJsb2NrIjogMCwgIkdsb2JhbElkIjogMCwgIkN1c3RvbWVyIjogbnVsbCwgIkFjdGl2YXRlZE1hY2hpbmVzIjogW10sICJUcmlhbEFjdGl2YXRpb24iOiAwLCAiTWF4Tm9PZk1hY2hpbmVzIjogMCwgIkFsbG93ZWRNYWNoaW5lcyI6IFtdLCAiRGF0YU9iamVjdHMiOiBudWxsLCAiU2lnbkRhdGUiOiAxNzg2MjYyNzEzLCAiUmVzZWxsZXIiOiBudWxsfQ==\", \"signature\": \"AUrpGL+JxZe4zJOxqYmnb/p8jDZRyiuqWeVaP7rO4hF+lq8qJPD8ovb2crM9fFyanEGoCyfRItiBJhEVhp/2hvqqT+s/Kjxn7XbIzXIT3hB73XRpQx2MgMNeusRGhT9RnBtMY0+7m0PiGnLsVmzb5NnjmjACYpvEcz+Dy85T1TbzoZjLnkYvANe7+hIi6pSIBFqzzKT3o3t6e6TeA6Wv7ApGxRSUGUGzoWemqK/XUh3LFIDDX2nFfM0S4kUmAtOFrraaC6PNlIjULPgaBaeqtI+gPDTcMDIil6paAjhqRFAV/VNjPaohfE9L7vqmx/xZdvjcnPCC5rUm/l+vOX5VdA==\", \"result\": 0, \"message\": \"\"}"
     }
   },
   "version": 1
