@@ -90,7 +90,7 @@
             white-space: pre-wrap; word-break: break-all; color: #aaa;
         }
 
-        #login-section { display: block; }
+        #gate-section { display: block; }
         #admin-section { display: none; }
 
         .generated-key {
@@ -154,12 +154,11 @@
     <h1>DILEMMA AUTH</h1>
     <p class="subtitle">License Key Management</p>
 
-    <!-- LOGIN -->
-    <div id="login-section" class="card">
-        <h2>Admin Login</h2>
-        <p style="font-size:0.85em;color:#888;margin-bottom:14px">Enter password to access the dashboard.</p>
-        <input type="password" id="password" placeholder="Admin password" style="margin-bottom:12px" onkeydown="if(event.key==='Enter')doLogin()">
-        <button onclick="doLogin()">Unlock</button>
+    <!-- GATE -->
+    <div id="gate-section" class="card">
+        <h2>DILEMMA AUTH</h2>
+        <p style="font-size:0.85em;color:#888;margin-bottom:14px">Verifying access...</p>
+        <div id="gate-status" style="font-size:0.85em;color:#888"><span class="spinner"></span>Checking your IP address...</div>
     </div>
 
     <!-- ADMIN PANEL -->
@@ -240,19 +239,10 @@
                     <span class="badge red">Not configured</span> Keys must be pushed manually.
                 </div>
             </div>
-
-            <div class="card" style="margin-top:12px">
-                <h2>Change Admin Password</h2>
-                <div class="row" style="margin-bottom:12px">
-                    <input type="password" id="new-pw" placeholder="New password">
-                    <button style="max-width:100px" onclick="changePassword()">Update</button>
-                </div>
-                <div id="pw-status" style="font-size:0.85em"></div>
-            </div>
         </div>
 
         <div style="text-align:center;margin-top:12px;padding-bottom:40px">
-            <a href="#" onclick="doLogout()">Lock panel</a>
+            <a href="#" onclick="checkIp().then(showAdmin)">Re-check access</a>
         </div>
     </div>
 
@@ -272,57 +262,49 @@ const REPO_NAME = 'Auth';
         const data = await resp.json();
         if (data && data.keys) keyDB = data;
     } catch(e) {}
-    if (sessionStorage.getItem('authed') === '1') {
-        showAdmin();
-        refreshAll();
-        checkTokenStatus();
-    }
+    const ok = await checkIp();
+    if (ok) showAdmin();
 })();
 
-// ---------- Auth ----------
-async function doLogin() {
-    const pw = document.getElementById('password').value;
-    if (!pw) return toast('Enter password', 'error');
-    const encoder = new TextEncoder();
-    const saved = localStorage.getItem('admin_pw_hash');
-    const checkPw = saved || 'dilemma2026';
-    const hashBuf = await crypto.subtle.digest('SHA-256', encoder.encode(pw));
-    const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
-    const expBuf = await crypto.subtle.digest('SHA-256', encoder.encode(checkPw));
-    const expHex = Array.from(new Uint8Array(expBuf)).map(b => b.toString(16).padStart(2,'0')).join('');
-    if (hashHex === expHex) {
-        sessionStorage.setItem('authed', '1');
-        showAdmin();
-        refreshAll();
-        checkTokenStatus();
-        toast('Unlocked', 'success');
-    } else {
-        toast('Wrong password', 'error');
+// ---------- IP Gate ----------
+const ALLOWED_IPS = ['98.52.75.65'];
+
+async function getClientIp() {
+    const providers = [
+        'https://api.ipify.org?format=json',
+        'https://api64.ipify.org?format=json'
+    ];
+    for (const url of providers) {
+        try {
+            const r = await fetch(url);
+            const d = await r.json();
+            if (d && d.ip) return d.ip.trim();
+        } catch(e) {}
     }
+    return null;
 }
 
-function doLogout() {
-    sessionStorage.removeItem('authed');
-    document.getElementById('login-section').style.display = 'block';
-    document.getElementById('admin-section').style.display = 'none';
-    toast('Locked', 'error');
+async function checkIp() {
+    const status = document.getElementById('gate-status');
+    status.innerHTML = '<span class="spinner"></span>Checking your IP address...';
+    const ip = await getClientIp();
+    if (!ip) {
+        status.innerHTML = '<span class="badge red">Could not determine your IP.</span>';
+        return false;
+    }
+    if (ALLOWED_IPS.includes(ip)) {
+        status.innerHTML = '<span class="badge green">Access granted (' + ip + ')</span>';
+        return true;
+    }
+    status.innerHTML = '<span class="badge red">Access denied. Your IP (' + ip + ') is not authorized.</span>';
+    return false;
 }
 
 function showAdmin() {
-    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('gate-section').style.display = 'none';
     document.getElementById('admin-section').style.display = 'block';
-}
-
-function changePassword() {
-    const pw = document.getElementById('new-pw').value;
-    if (pw.length < 6) return toast('Password too short (6+ chars)', 'error');
-    const encoder = new TextEncoder();
-    crypto.subtle.digest('SHA-256', encoder.encode(pw)).then(buf => {
-        const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-        localStorage.setItem('admin_pw_hash', hex);
-        document.getElementById('pw-status').innerHTML = '<span class="badge green">Password updated</span>';
-        toast('Password changed', 'success');
-    });
+    refreshAll();
+    checkTokenStatus();
 }
 
 // ---------- Tabs ----------
