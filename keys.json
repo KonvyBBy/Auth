@@ -1,11 +1,4 @@
 {
-  "keys": {
-    "d0a602963ad63e491a4cfb12d0acf8aa4660dc61024890575a836ed67f32a8f4": {
-      "created": "2026-08-09T08:13:34.423793",
-      "expires": "2026-08-09",
-      "id": "DIL-1786263214000",
-      "key": "{\"licenseKey\": \"eyJQcm9kdWN0SWQiOiAxLCAiSUQiOiAxNzg2MjYzMjE0MDAwLCAiS2V5IjogIkRJTC0xNzg2MjYzMjE0MDAwIiwgIkNyZWF0ZWQiOiAxNzg2MjYzMjE0LCAiRXhwaXJlcyI6IDE3ODYzNDk2MTQsICJQZXJpb2QiOiAxLCAiRjEiOiBmYWxzZSwgIkYyIjogZmFsc2UsICJGMyI6IGZhbHNlLCAiRjQiOiBmYWxzZSwgIkY1IjogZmFsc2UsICJGNiI6IGZhbHNlLCAiRjciOiBmYWxzZSwgIkY4IjogZmFsc2UsICJOb3RlcyI6ICIiLCAiQmxvY2siOiAwLCAiR2xvYmFsSWQiOiAwLCAiQ3VzdG9tZXIiOiBudWxsLCAiQWN0aXZhdGVkTWFjaGluZXMiOiBbXSwgIlRyaWFsQWN0aXZhdGlvbiI6IDAsICJNYXhOb09mTWFjaGluZXMiOiAwLCAiQWxsb3dlZE1hY2hpbmVzIjogW10sICJEYXRhT2JqZWN0cyI6IG51bGwsICJTaWduRGF0ZSI6IDE3ODYyNjMyMTQsICJSZXNlbGxlciI6IG51bGx9\", \"signature\": \"azFnlkuNwuN06jEP+6/Yev4Fg5E31JSCwEBrsgogGqBL5eB2v1krLhX7Seecq3xkcMwCXiWU43CtZ/6FgHZr5wzaNDuHbNejKoQfrzCMp/QM87+h2SIYEbsxucjrRLyQHTNu7dL8Nyawv0Bm2UeJv08CfaF86BGD05dPqjv8fIn/uJ+9NCCN8Ta4/2O+0ytaWNR67fOjUJW/NQP5KUv70pY0wMRJqJAu4+1bWjnZVU+L0Zr6VMJ3jbX87cSKOko6a+ESfUkgQ9/yfR9emhrK4wJRsRBCux5dUvg0p4WC8ZaYOCI4+yeIxxADUbPu7z8c5BodtNWdpNW+PKkR9k4jFA==\", \"result\": 0, \"message\": \"\"}"
-    }
-  },
-  "version": 1
+  "keys": {},
+  "version": 3
 }
